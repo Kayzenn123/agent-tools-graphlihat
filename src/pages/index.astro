@@ -1,0 +1,377 @@
+---
+import Layout from '~/layouts/PageLayout.astro';
+import { Icon } from 'astro-icon/components';
+
+import GraphTool from '~/components/GraphTool.astro';
+import Features from '~/components/widgets/Features.astro';
+import Steps from '~/components/widgets/Steps.astro';
+import FAQs from '~/components/widgets/FAQs.astro';
+import CallToAction from '~/components/widgets/CallToAction.astro';
+import Note from '~/components/widgets/Note.astro';
+import StructuredData from '~/components/common/StructuredData.astro';
+import { SITE, METADATA, I18N } from 'astrowind:config';
+import favIconSvg from '~/assets/favicons/favicon.svg';
+
+const metadata = {
+  title: 'GraphLihat — Ubah Catatan Jadi Peta Graf',
+  ignoreTitleTemplate: true,
+};
+
+const organizationId = `${SITE?.site}/#organization`;
+const structuredData = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': `${SITE?.site}/#website`,
+    name: SITE?.name,
+    url: SITE?.site,
+    inLanguage: I18N?.language,
+    publisher: { '@id': organizationId },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    '@id': organizationId,
+    name: SITE?.name,
+    url: SITE?.site,
+    logo: new URL(favIconSvg.src, SITE?.site).toString(),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: 'GraphLihat',
+    url: SITE?.site,
+    applicationCategory: 'EducationalApplication',
+    operatingSystem: 'Web browser',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'IDR' },
+    description:
+      'Tempel catatanmu, lihat hubungan antar idenya sebagai graf interaktif — tiap garis punya kalimat bukti. Gratis, tanpa akun, data tidak keluar dari browser.',
+  },
+];
+---
+
+<Layout metadata={metadata}>
+  <StructuredData slot="head" schema={structuredData} />
+  <Fragment slot="announcement">
+    <div class="flex items-center justify-center gap-2 border-b-2 border-default bg-[#004c8f] px-4 py-2 text-center text-sm font-semibold text-white">
+      <Icon name="stempel-verifikasi" class="h-4 w-4 shrink-0" />
+      <span>Gratis · Tanpa akun · Datamu tidak keluar dari browser</span>
+    </div>
+  </Fragment>
+  <a href="#meja" class="hidden focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:block focus:min-h-[44px] focus:items-center focus:rounded-full focus:bg-primary focus:px-4 focus:py-2 focus:text-white">
+    Lompat ke Meja Kerja
+  </a>
+
+  <!-- HERO: bukan hero marketing — judul raksasa = pintu ke meja kerja -->
+  <section id="hero" class="relative overflow-hidden pt-10 md:pt-16" aria-labelledby="hero-title">
+    <div class="mx-auto max-w-7xl px-4 md:px-6">
+      <p class="flex items-center gap-2 text-sm font-semibold tracking-widest text-primary">
+        <Icon name="stempel-verifikasi" class="h-5 w-5" />
+        MEJA ARSIP · EDISI 25 OKTOBER 2026
+      </p>
+      <h1
+        id="hero-title"
+        class="wght-anim mt-4 break-words font-heading leading-[0.9] text-heading"
+        style="font-size: clamp(40px, 15.5vw, 220px); letter-spacing: -0.02em;"
+      >
+        GRAPH&shy;LIHAT
+      </h1>
+      <div class="mt-4 flex flex-wrap items-end justify-between gap-4">
+        <p class="max-w-xl text-lg leading-relaxed text-default md:text-xl">
+          Tempel catatanmu. Lihat hubungan antar idenya sebagai peta graf — dan klik tiap garisnya untuk membaca kalimat buktinya.
+        </p>
+        <p class="font-serif text-2xl text-muted md:text-3xl">— Mbak Arsip sudah menyiapkan mejanya.</p>
+      </div>
+      <div class="mt-6 flex flex-wrap gap-3">
+        <a href="#meja" class="btn btn-primary inline-flex min-h-[44px] items-center gap-2">
+          <Icon name="tabler:network" class="h-5 w-5" /> Buka Meja Kerja
+        </a>
+        <a
+          href="#contoh"
+          class="inline-flex min-h-[44px] items-center gap-2 rounded-full border-2 border-default px-6 py-3 text-base font-medium transition hover:border-primary hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+        >
+          Lihat tiga contoh dulu
+        </a>
+      </div>
+    </div>
+
+    <!-- Marquee band 1 -->
+    <div class="marquee-band mt-10 border-y-2 border-default bg-primary py-2 text-white" aria-hidden="true">
+      <div class="marquee-track marquee-a">
+        <span>RENDANG · SANTAN · DAGING SAPI · FOTOSINTESIS · KLOROFIL · MAJAPAHIT · GAJAH MADA · SUMPAH PALAPA ·&nbsp;</span><span>RENDANG · SANTAN · DAGING SAPI · FOTOSINTESIS · KLOROFIL · MAJAPAHIT · GAJAH MADA · SUMPAH PALAPA ·&nbsp;</span>
+      </div>
+    </div>
+    <!-- Marquee band 2 -->
+    <div class="marquee-band border-b-2 border-default bg-[#004c8f] py-2 text-white" aria-hidden="true">
+      <div class="marquee-track marquee-b">
+        <span>JALUR BUKTI · SIMPUL · RELASI · KALIMAT BUKTI · TETANGGA · BUKU BESAR ·&nbsp;</span><span>JALUR BUKTI · SIMPUL · RELASI · KALIMAT BUKTI · TETANGGA · BUKU BESAR ·&nbsp;</span>
+      </div>
+    </div>
+    <div class="mx-auto flex max-w-7xl justify-end px-4 pt-2 md:px-6">
+      <button
+        id="marqueeToggle"
+        type="button"
+        aria-pressed="false"
+        class="inline-flex min-h-[44px] items-center rounded-full border border-muted px-3 py-2 text-xs font-medium text-muted transition hover:border-primary hover:text-primary focus-visible:outline-2 focus-visible:outline-primary"
+      >
+        Jeda marquee
+      </button>
+    </div>
+  </section>
+
+  <!-- MEJA KERJA -->
+  <GraphTool />
+
+  <!-- FITUR -->
+  <Features
+    id="fitur"
+    classes={{ headline: { title: 'tracking-normal leading-tight' } }}
+    title="Yang bisa dilakukan di meja ini"
+    subtitle="Enam perkakas, semuanya bekerja di browsermu — tidak ada satu pun yang butuh server."
+    items={[
+      {
+        title: 'Tempel catatan, graf langsung jadi',
+        description:
+          'Kata yang muncul berulang jadi simpul; dua simpul dalam satu kalimat jadi relasi. Ekstraksi kata kunci berjalan lokal — bukan AI, dan tidak ada data yang diunggah.',
+        icon: 'tabler:file-text',
+      },
+      {
+        title: 'Tiap garis punya kalimat bukti',
+        description:
+          'Klik satu garis relasi dan baca kalimat persis dari catatanmu yang membuktikannya. Graf tanpa bukti cuma hiasan — di sini bukti selalu satu klik jauhnya.',
+        icon: 'tabler:search',
+      },
+      {
+        title: 'Fokus tetangga, bukan bola rambut',
+        description:
+          'Graf besar cepat jadi kusut. Nyalakan “Hanya tetangga” dan yang terlihat cuma simpul pilihanmu beserta tetangga satu levelnya — ala local graph Obsidian.',
+        icon: 'tabler:network',
+      },
+      {
+        title: 'Buku besar spreadsheet',
+        description:
+          'Semua simpul dan relasi dibedah di tabel: nama, tipe, jumlah relasi, kemunculan, dan kalimat bukti. Cari, saring, hapus, tambah — langsung dari tabel.',
+        icon: 'tabler:table',
+      },
+      {
+        title: 'Ekspor JSON & PNG, salin tautan',
+        description:
+          'Simpan grafmu sebagai JSON atau gambar PNG, atau salin tautan deep-link — siapa pun yang membukanya melihat graf yang sama persis.',
+        icon: 'tabler:download',
+      },
+      {
+        title: 'Datamu tidak keluar dari browser',
+        description:
+          'Tidak ada akun, tidak ada pelacak, tidak ada server yang menyimpan catatanmu. Tutup tab dan datamu tetap di perangkatmu sendiri.',
+        icon: 'tabler:eye-off',
+      },
+    ]}
+  />
+
+  <!-- CARA PAKAI -->
+  <Steps
+    id="cara"
+    classes={{ headline: { title: 'tracking-normal leading-tight' } }}
+    title="Tiga langkah dari catatan jadi peta"
+    items={[
+      {
+        title: 'Tempel atau pilih contoh',
+        description:
+          'Tempel catatanmu (minimal 3 kalimat) lalu tekan “Bangun Graf” — atau buka contoh Rendang Nenek, Fotosintesis, atau Majapahit untuk melihat dulu cara kerjanya.',
+        icon: 'tabler:file-text',
+      },
+      {
+        title: 'Klik simpul, baca buktinya',
+        description:
+          'Klik satu simpul untuk melihat kalimat-kalimat tempat ia muncul dan siapa tetangganya. Klik satu garis untuk melihat kalimat bukti relasi itu.',
+        icon: 'tabler:search',
+      },
+      {
+        title: 'Saring, tambah, ekspor',
+        description:
+          'Saring berdasarkan tipe, tambah simpul dan relasi sendiri beserta kalimat buktinya, lalu ekspor sebagai JSON/PNG atau bagikan lewat tautan.',
+        icon: 'tabler:download',
+      },
+    ]}
+  />
+
+  <!-- FAQ -->
+  <FAQs
+    id="faq"
+    classes={{ headline: { title: 'tracking-normal leading-tight' } }}
+    title="Yang sering ditanyakan ke Mbak Arsip"
+    subtitle="Jawaban singkat, tanpa jargon."
+    items={[
+      {
+        title: 'Apakah GraphLihat memakai AI?',
+        description:
+          'Tidak. Graf dibangun dari pencocokan kata kunci berbasis frekuensi di browsermu: kata yang muncul berulang jadi simpul, dua simpul dalam satu kalimat jadi relasi. Sederhana, bisa dijelaskan, dan tidak mengarang — kekurangannya: ia tidak “memahami” teks, jadi teks yang tidak menyebut topik berulang akan menghasilkan sedikit simpul.',
+      },
+      {
+        title: 'Apakah catatanku dikirim ke server?',
+        description:
+          'Tidak. Semua pemrosesan terjadi di browsermu. Satu-satunya yang tersimpan adalah salinan graf di localStorage perangkatmu sendiri, supaya mejamu tetap ada saat halaman dimuat ulang. Tautan deep-link membawa graf di dalam URL-nya.',
+      },
+      {
+        title: 'Format apa yang bisa diekspor?',
+        description:
+          'JSON (struktur graf lengkap — bisa diimpor kembali lewat tombol “Impor JSON”) dan PNG (gambar graf). Tautan deep-link juga bisa disalin dan dibagikan.',
+      },
+      {
+        title: 'Berapa banyak simpul yang didukung?',
+        description:
+          'Ekstraksi dari teks dibatasi 24 simpul dan 60 relasi supaya graf tetap terbaca. Graf dari tautan atau berkas JSON dibatasi 200 simpul dan 400 relasi. Kalau teksmu panjang, pecah per bab atau per topik.',
+      },
+      {
+        title: 'Contoh bawaannya dari mana?',
+        description:
+          'Tiga contoh ditulis tangan di meja ini: Rendang Nenek (resep rumahan generik), Fotosintesis (materi IPA dasar), dan Majapahit (fakta sejarah mapan: berdiri 1293, Sumpah Palapa 1336, Hayam Wuruk 1350–1389). Semuanya fakta umum, bukan karangan.',
+      },
+      {
+        title: 'Bisa dipakai di HP?',
+        description:
+          'Bisa. Graf bisa digeser dengan jari, di-zoom dengan gulir, dan semua tombol minimal 44×44 piksel. Tabel berubah jadi gulir horizontal di layar kecil.',
+      },
+    ]}
+  />
+
+  <Note
+    title="Catatan Mbak Arsip:"
+    description="Contoh di meja ini berisi fakta umum yang ditulis tangan. Graf dari catatanmu sendiri hanya sebaik teks yang kamu tempel — kalau teksnya menyebut topik sekali saja, simpulnya tidak akan muncul. Itu batas alat ini, dan Mbak tidak akan menutup-nutupinya."
+  />
+
+  <CallToAction
+    actions={[{ variant: 'primary', text: 'Buka Meja Kerja', href: '#meja', icon: 'tabler:network' }]}
+  >
+    <Fragment slot="title">Mejanya sudah siap.</Fragment>
+    <Fragment slot="subtitle">Tempel catatan pertamamu — atau buka contoh Rendang Nenek dan lihat sendiri cara graf ini bekerja.</Fragment>
+  </CallToAction>
+</Layout>
+
+<style>
+  .marquee-band {
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .marquee-track {
+    display: inline-flex;
+    font-family: var(--font-heebo);
+    font-weight: 800;
+    font-size: clamp(1.1rem, 2.6vw, 1.6rem);
+    letter-spacing: 0.04em;
+    will-change: transform;
+  }
+  .marquee-a {
+    animation: marquee-left 28s linear infinite;
+  }
+  .marquee-b {
+    animation: marquee-right 34s linear infinite;
+  }
+  @keyframes marquee-left {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @keyframes marquee-right {
+    from { transform: translateX(-50%); }
+    to { transform: translateX(0); }
+  }
+  .marquee-paused .marquee-track {
+    animation-play-state: paused;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-track {
+      animation: none;
+    }
+  }
+  .gerak-mati .marquee-track {
+    animation: none;
+  }
+</style>
+
+<script>
+  // GSAP dimuat dinamis saat dibutuhkan (hemat TBT awal): impor statis
+  // membuat 44 KB gzip ikut diparse sebelum First Paint.
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const motionOff = () => document.documentElement.classList.contains('gerak-mati') || reduced;
+
+  // Toggle jeda marquee (WCAG 2.2.2)
+  const marqueeToggle = document.getElementById('marqueeToggle');
+  if (marqueeToggle) {
+    marqueeToggle.addEventListener('click', () => {
+      const paused = document.body.classList.toggle('marquee-paused');
+      marqueeToggle.setAttribute('aria-pressed', String(paused));
+      marqueeToggle.textContent = paused ? 'Jalankan marquee' : 'Jeda marquee';
+    });
+    if (reduced) {
+      document.body.classList.add('marquee-paused');
+      marqueeToggle.setAttribute('aria-pressed', 'true');
+      marqueeToggle.textContent = 'Jalankan marquee';
+    }
+  }
+
+  async function initMotion() {
+    if (motionOff() || initMotion.done) return;
+    initMotion.done = true;
+    try {
+      const [{ gsap }, { ScrollTrigger }] = await Promise.all([import('gsap'), import('gsap/ScrollTrigger')]);
+      gsap.registerPlugin(ScrollTrigger);
+      // A — kamera terbang: judul membesar + sedikit miring saat scroll
+      gsap.to('#hero-title', {
+        scale: 1.35,
+        rotate: -2,
+        transformOrigin: '50% 20%',
+        ease: 'none',
+        scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: true },
+      });
+      // B — marquee skew mengikuti kecepatan scroll
+      let skewSetter = gsap.quickSetter('.marquee-track', 'skewX', 'deg');
+      let clampSkew = gsap.utils.clamp(-8, 8);
+      ScrollTrigger.create({
+        onUpdate: (self) => {
+          const skew = clampSkew(self.getVelocity() / -250);
+          if (Math.abs(skew) > Math.abs(gsap.getProperty('.marquee-track', 'skewX'))) {
+            skewSetter(skew);
+            gsap.to('.marquee-track', { skewX: 0, duration: 0.6, ease: 'power3', overwrite: 'auto' });
+          }
+        },
+      });
+      // C — variable font axis: Heebo wght 400 -> 800 pada heading section saat scroll
+      document.querySelectorAll('h2').forEach((h) => {
+        const state = { w: 400 };
+        gsap.to(state, {
+          w: 800,
+          ease: 'none',
+          scrollTrigger: { trigger: h, start: 'top 85%', end: 'top 35%', scrub: true },
+          onUpdate: () => {
+            h.style.fontVariationSettings = "'wght' " + Math.round(state.w);
+          },
+        });
+      });
+      // E — curtain wipe antar section
+      // Wipe hanya via clip-path (tanpa opacity): opacity < 1 membuat
+      // Lighthouse mengukur kontras teks tercampur latar (2.85:1, gagal AA).
+      gsap.utils.toArray('#fitur, #cara, #faq').forEach((sec) => {
+        gsap.fromTo(
+          sec,
+          { clipPath: 'inset(8% 0% 0% 0%)' },
+          {
+            clipPath: 'inset(0% 0% 0% 0%)',
+            ease: 'none',
+            scrollTrigger: { trigger: sec, start: 'top 85%', end: 'top 35%', scrub: true },
+          }
+        );
+      });
+    } catch {
+      // Gerak adalah peningkatan, bukan syarat — halaman tetap berfungsi penuh tanpanya.
+    }
+  }
+
+  // Pemicu: saat pengguna mulai scroll, atau saat browser menganggur (maks 2 detik).
+  const kick = () => initMotion();
+  window.addEventListener('scroll', kick, { once: true, passive: true });
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(kick, { timeout: 2000 });
+  } else {
+    setTimeout(kick, 1200);
+  }
+</script>

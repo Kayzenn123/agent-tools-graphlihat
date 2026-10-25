@@ -1,0 +1,1076 @@
+---
+import { Icon } from 'astro-icon/components';
+import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
+import Headline from '~/components/ui/Headline.astro';
+import { SAMPLES } from '~/lib/graph';
+
+const sampleIcons: Record<string, string> = {
+  rendang: 'panci-rendang',
+  fotosintesis: 'tabler:leaf',
+  majapahit: 'tabler:building',
+};
+---
+
+<WidgetWrapper id="meja" containerClass="max-w-7xl">
+  <Headline
+    title="Meja Kerja"
+    subtitle="Tempel catatanmu — atau buka satu contoh di bawah. Graf terbentuk di tempat, di browsermu, tanpa ada data yang dikirim ke mana pun."
+    tagline="Tidak ada akun. Tidak ada awan."
+    classes={{ title: 'tracking-normal leading-tight' }}
+  />
+
+  <div class="mt-2 flex flex-wrap items-center gap-3">
+    <button
+      id="stampBtn"
+      type="button"
+      class="group flex min-h-[44px] items-center gap-2 rounded-full border-2 border-primary px-4 py-2 text-sm font-semibold text-primary transition hover:bg-primary hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+      aria-label="TERVERIFIKASI · MBak Arsip — ketuk 5 kali untuk kejutan"
+      title="Stempel Mbak Arsip — ketuk 5 kali"
+    >
+      <Icon name="stempel-verifikasi" class="h-6 w-6 transition-transform duration-500 group-hover:rotate-180" />
+      <span>TERVERIFIKASI · MBak Arsip</span>
+    </button>
+    <button
+      id="motionToggle"
+      type="button"
+      aria-pressed="true"
+      class="inline-flex min-h-[44px] items-center rounded-full border border-muted px-4 py-2 text-sm font-medium text-muted transition hover:border-primary hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+    >
+      Gerak: nyala
+    </button>
+    <p class="font-serif text-xl text-muted" aria-hidden="true">— dicatat rapi, dicek satu-satu.</p>
+  </div>
+
+  <!-- Contoh bawaan -->
+  <div id="contoh" class="mt-8 scroll-mt-[72px]">
+    <h3 class="font-heading text-2xl text-heading">Tiga contoh di meja</h3>
+    <p class="mt-1 text-sm text-muted">Klik satu — grafnya langsung terbuka. Semua contoh berisi fakta umum, bukan karangan.</p>
+    <div class="mt-4 grid gap-3 sm:grid-cols-3" role="group" aria-label="Contoh graf bawaan">
+      {
+        SAMPLES.map((s) => (
+          <button
+            type="button"
+            data-sample={s.id}
+            class="sample-btn rounded-xl border-2 border-default bg-white/40 p-4 text-left transition hover:-translate-y-0.5 hover:border-primary hover:shadow-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary dark:bg-white/5"
+          >
+            <span class="flex items-center gap-2 font-semibold">
+              <Icon name={sampleIcons[s.id] ?? 'tabler:network'} class="h-6 w-6 text-primary" />
+              {s.title}
+            </span>
+            <span class="mt-1 block text-sm text-muted">{s.desc}</span>
+            <span class="mt-2 block text-xs font-bold tracking-widest text-primary">{s.stamp}</span>
+          </button>
+        ))
+      }
+    </div>
+  </div>
+
+  <!-- Masukan teks -->
+  <div class="mt-8 rounded-xl border-2 border-default bg-white/40 p-4 dark:bg-white/5 md:p-6">
+    <label for="noteInput" class="font-heading text-xl text-heading">Tempel catatanmu</label>
+    <p class="mt-1 text-sm text-muted">
+      Minimal 3 kalimat. Kata yang muncul berulang jadi simpul; dua simpul dalam satu kalimat jadi relasi — beserta kalimat buktinya.
+      Ini pencocokan kata kunci lokal, bukan AI.
+    </p>
+    <textarea
+      id="noteInput"
+      rows="5"
+      maxlength="20000"
+      placeholder="Contoh: Fotosintesis terjadi di daun. Daun menangkap cahaya matahari dengan klorofil. Karbon dioksida diserap dari udara lewat stomata…"
+      class="mt-3 w-full rounded-lg border-2 border-default bg-white p-3 text-base leading-relaxed text-default placeholder:text-muted/70 focus:border-primary focus:outline-none dark:bg-black/20"
+    ></textarea>
+    <div class="mt-2 flex flex-wrap items-center gap-2">
+      <button
+        id="buildBtn"
+        type="button"
+        class="btn btn-primary inline-flex min-h-[44px] items-center gap-2"
+      >
+        <Icon name="tabler:network" class="h-5 w-5" /> Bangun Graf
+      </button>
+      <button
+        id="clearBtn"
+        type="button"
+        class="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-muted px-5 py-2.5 text-sm font-medium text-muted transition hover:border-primary hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+      >
+        <Icon name="tabler:trash" class="h-5 w-5" /> Bersihkan
+      </button>
+      <button
+        id="importBtn"
+        type="button"
+        class="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-muted px-5 py-2.5 text-sm font-medium text-muted transition hover:border-primary hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+      >
+        <Icon name="tabler:upload" class="h-5 w-5" /> Impor JSON
+      </button>
+      <input id="importFile" type="file" accept="application/json,.json" class="hidden" aria-label="Impor berkas JSON graf" tabindex="-1" />
+      <span id="charCount" class="ml-auto text-xs text-muted" aria-live="off">0 / 20.000 karakter</span>
+    </div>
+    <p id="inputError" class="mt-2 hidden text-sm font-semibold text-primary" role="alert"></p>
+  </div>
+
+  <!-- Statistik + toolbar -->
+  <div class="mt-6 flex flex-wrap items-center gap-2" role="toolbar" aria-label="Perkakas graf">
+    <p class="mr-2 text-sm font-semibold" aria-live="polite">
+      <span id="statNodes">0</span> simpul · <span id="statEdges">0</span> relasi
+    </p>
+    <button id="zoomIn" type="button" class="tool-btn" aria-label="Perbesar graf"><Icon name="tabler:zoom-in" class="h-5 w-5" /></button>
+    <button id="zoomOut" type="button" class="tool-btn" aria-label="Perkecil graf"><Icon name="tabler:zoom-out" class="h-5 w-5" /></button>
+    <button id="fitBtn" type="button" class="tool-btn" aria-label="Pas-kan graf ke layar"><Icon name="tabler:maximize" class="h-5 w-5" /></button>
+    <button id="relayoutBtn" type="button" class="tool-btn" aria-label="Tata ulang graf"><Icon name="tabler:refresh" class="h-5 w-5" /></button>
+    <label class="ml-1 flex min-h-[44px] items-center gap-2 rounded-full border border-muted px-3 text-sm">
+      <Icon name="tabler:search" class="h-4 w-4 text-muted" />
+      <span class="sr-only">Cari simpul</span>
+      <input id="searchInput" type="search" placeholder="Cari simpul…" class="w-28 min-h-[44px] bg-transparent text-sm focus:outline-none sm:w-40" />
+    </label>
+    <label class="flex min-h-[44px] items-center gap-2 rounded-full border border-muted px-3 text-sm">
+      <span class="sr-only">Saring berdasarkan tipe</span>
+      <select id="typeFilter" class="min-h-[44px] bg-transparent text-sm focus:outline-none">
+        <option value="">Semua tipe</option>
+        <option value="topik">Topik</option>
+        <option value="nama">Nama</option>
+        <option value="tahun">Tahun</option>
+        <option value="langkah">Langkah</option>
+      </select>
+    </label>
+    <button id="neighborToggle" type="button" role="switch" aria-checked="false" class="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-muted px-3 text-sm transition hover:border-primary hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
+      <span id="neighborDot" aria-hidden="true" class="inline-block h-4 w-4 rounded-full border-2 border-muted transition"></span>
+      Hanya tetangga
+    </button>
+    <span class="flex-1"></span>
+    <button id="exportJson" type="button" class="tool-btn-wide"><Icon name="tabler:download" class="h-5 w-5" /> JSON</button>
+    <button id="exportPng" type="button" class="tool-btn-wide"><Icon name="tabler:download" class="h-5 w-5" /> PNG</button>
+    <button id="copyLink" type="button" class="tool-btn-wide"><Icon name="tabler:link" class="h-5 w-5" /> Salin Tautan</button>
+  </div>
+
+  <!-- Graf + panel bukti -->
+  <div class="mt-4 grid gap-4 lg:grid-cols-[1fr_340px]">
+    <div class="relative overflow-hidden rounded-xl border-2 border-default bg-[#fce5e3] dark:bg-black/30">
+      <div
+        id="cy"
+        tabindex="0"
+        role="application"
+        aria-label="Graf pengetahuan interaktif. Gunakan tombol perkakas untuk zoom, atau panah keyboard untuk menggeser."
+        class="h-[480px] w-full touch-pan-y md:h-[560px]"
+      ></div>
+      <div id="cyEmpty" class="absolute inset-0 hidden flex-col items-center justify-center gap-3 p-6 text-center">
+        <Icon name="simpul-benang" class="h-16 w-16 text-muted" />
+        <p class="font-heading text-2xl text-heading">Meja masih kosong.</p>
+        <p class="max-w-sm text-sm text-muted">Tempel catatanmu di atas lalu tekan “Bangun Graf” — atau buka satu contoh: Rendang Nenek, Fotosintesis, atau Majapahit.</p>
+      </div>
+      <p class="absolute bottom-2 left-3 rounded bg-white/80 px-2 py-1 text-[11px] text-muted dark:bg-black/60">
+        Seret latar untuk menggeser · gulir untuk zoom · klik simpul untuk melihat buktinya
+      </p>
+    </div>
+
+    <aside id="detail" class="rounded-xl border-2 border-default bg-white/40 p-4 dark:bg-white/5 md:p-5" aria-live="polite">
+      <div id="detailEmpty">
+        <p class="font-serif text-2xl text-muted">Belum ada yang dipilih.</p>
+        <p class="mt-2 text-sm leading-relaxed text-muted">
+          Klik satu simpul atau satu garis relasi di graf — Mbak Arsip akan menunjukkan kalimat buktinya di sini, beserta tetangga-tetangganya.
+        </p>
+        <div class="mt-4 rounded-lg border border-dashed border-muted p-3 text-sm text-muted">
+          <p class="font-semibold text-default">Cara membaca graf ini</p>
+          <ul class="mt-1 list-disc space-y-1 pl-5">
+            <li>Bulat besar = kata yang sering muncul.</li>
+            <li>Warna merah = topik, hijau = nama, biru = tahun, merah muda = langkah.</li>
+            <li>Garis = dua simpul muncul di kalimat yang sama.</li>
+          </ul>
+        </div>
+      </div>
+      <div id="detailContent" class="hidden"></div>
+    </aside>
+  </div>
+
+  <!-- Spreadsheet simpul & relasi -->
+  <div class="mt-6 rounded-xl border-2 border-default bg-white/40 dark:bg-white/5">
+    <div class="flex flex-wrap items-center gap-2 border-b-2 border-default p-3">
+      <h3 class="font-heading text-xl text-heading">Buku Besar — semua simpul &amp; relasi</h3>
+      <span class="flex-1"></span>
+      <div role="tablist" aria-label="Pilih tabel" class="flex gap-1">
+        <button id="tabNodes" type="button" role="tab" aria-selected="true" class="sheet-tab sheet-tab-active">Simpul</button>
+        <button id="tabEdges" type="button" role="tab" aria-selected="false" class="sheet-tab">Relasi</button>
+      </div>
+      <label class="flex min-h-[44px] items-center gap-2 rounded-full border border-muted px-3 text-sm">
+        <Icon name="tabler:search" class="h-4 w-4 text-muted" />
+        <span class="sr-only">Cari di tabel</span>
+        <input id="tableSearch" type="search" placeholder="Cari di tabel…" class="w-32 min-h-[44px] bg-transparent text-sm focus:outline-none sm:w-44" />
+      </label>
+    </div>
+
+    <div class="relative overflow-x-auto">
+      <table id="nodesTable" class="w-full min-w-[560px] text-left text-sm" aria-label="Tabel simpul: nama, tipe, jumlah relasi, dan kemunculan">
+        <thead>
+          <tr class="border-b border-default text-muted">
+            <th scope="col" class="px-4 py-3 font-semibold">#</th>
+            <th scope="col" class="px-4 py-3 font-semibold">Simpul</th>
+            <th scope="col" class="px-4 py-3 font-semibold">Tipe</th>
+            <th scope="col" class="px-4 py-3 font-semibold">Relasi</th>
+            <th scope="col" class="px-4 py-3 font-semibold">Muncul</th>
+            <th scope="col" aria-label="Aksi" class="px-4 py-3 font-semibold"></th>
+          </tr>
+        </thead>
+        <tbody id="nodesBody"></tbody>
+      </table>
+      <table id="edgesTable" class="hidden w-full min-w-[640px] text-left text-sm" aria-label="Tabel relasi: dari, relasi, ke, dan kalimat bukti">
+        <thead>
+          <tr class="border-b border-default text-muted">
+            <th scope="col" class="px-4 py-3 font-semibold">Dari</th>
+            <th scope="col" class="px-4 py-3 font-semibold">Relasi</th>
+            <th scope="col" class="px-4 py-3 font-semibold">Ke</th>
+            <th scope="col" class="px-4 py-3 font-semibold">Kalimat bukti</th>
+            <th scope="col" aria-label="Aksi" class="px-4 py-3 font-semibold"></th>
+          </tr>
+        </thead>
+        <tbody id="edgesBody"></tbody>
+      </table>
+    </div>
+    <p id="tableEmpty" class="hidden px-4 py-6 text-center text-sm text-muted">Belum ada baris — bangun graf dulu, ya.</p>
+
+    <!-- Tambah manual -->
+    <div class="grid gap-4 border-t-2 border-default p-4 md:grid-cols-2">
+      <form id="addNodeForm" class="rounded-lg border border-dashed border-muted p-3">
+        <p class="font-semibold">Tambah simpul sendiri</p>
+        <div class="mt-2 flex flex-wrap gap-2">
+          <label class="flex-1">
+            <span class="sr-only">Nama simpul baru</span>
+            <input id="newNodeLabel" type="text" maxlength="60" placeholder="Nama simpul, mis. Kunyit" class="w-full min-h-[44px] rounded-lg border border-default bg-white px-3 text-sm focus:border-primary focus:outline-none dark:bg-black/20" />
+          </label>
+          <label>
+            <span class="sr-only">Tipe simpul baru</span>
+            <select id="newNodeType" class="min-h-[44px] rounded-lg border border-default bg-white px-2 text-sm focus:border-primary focus:outline-none dark:bg-black/20">
+              <option value="topik">Topik</option>
+              <option value="nama">Nama</option>
+              <option value="tahun">Tahun</option>
+              <option value="langkah">Langkah</option>
+            </select>
+          </label>
+          <button type="submit" class="inline-flex min-h-[44px] items-center gap-1 rounded-full bg-primary px-4 text-sm font-semibold text-white hover:bg-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
+            <Icon name="tabler:plus" class="h-4 w-4" /> Tambah
+          </button>
+        </div>
+      </form>
+      <form id="addEdgeForm" class="rounded-lg border border-dashed border-muted p-3">
+        <p class="font-semibold">Tambah relasi sendiri</p>
+        <div class="mt-2 flex flex-wrap gap-2">
+          <label>
+            <span class="sr-only">Simpul asal</span>
+            <select id="edgeFrom" class="min-h-[44px] max-w-[140px] rounded-lg border border-default bg-white px-2 text-sm focus:border-primary focus:outline-none dark:bg-black/20"></select>
+          </label>
+          <label>
+            <span class="sr-only">Label relasi</span>
+            <input id="edgeLabel" type="text" maxlength="40" placeholder="mis. dibuat dari" class="w-full min-h-[44px] flex-1 rounded-lg border border-default bg-white px-3 text-sm focus:border-primary focus:outline-none dark:bg-black/20" />
+          </label>
+          <label>
+            <span class="sr-only">Simpul tujuan</span>
+            <select id="edgeTo" class="min-h-[44px] max-w-[140px] rounded-lg border border-default bg-white px-2 text-sm focus:border-primary focus:outline-none dark:bg-black/20"></select>
+          </label>
+          <button type="submit" class="inline-flex min-h-[44px] items-center gap-1 rounded-full bg-primary px-4 text-sm font-semibold text-white hover:bg-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
+            <Icon name="tabler:plus" class="h-4 w-4" /> Tambah
+          </button>
+        </div>
+        <label class="mt-2 block">
+          <span class="sr-only">Kalimat bukti relasi</span>
+          <input id="edgeEvidence" type="text" maxlength="200" placeholder="Kalimat bukti (wajib): mis. Rendang dimasak dari daging sapi." class="mt-2 w-full min-h-[44px] rounded-lg border border-default bg-white px-3 text-sm focus:border-primary focus:outline-none dark:bg-black/20" />
+        </label>
+      </form>
+    </div>
+  </div>
+
+  <p id="statusBar" class="mt-4 text-sm text-muted" aria-live="polite"></p>
+  <p id="eggNote" class="mt-2 hidden font-serif text-2xl text-primary" role="status"></p>
+</WidgetWrapper>
+
+<style>
+  .tool-btn {
+    display: inline-flex;
+    min-width: 44px;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    border: 1px solid var(--aw-color-text-muted);
+    color: var(--aw-color-text-default);
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .tool-btn:hover {
+    border-color: var(--aw-color-primary);
+    color: var(--aw-color-primary);
+  }
+  .tool-btn:focus-visible {
+    outline: 2px solid var(--aw-color-primary);
+    outline-offset: 2px;
+  }
+  .tool-btn-wide {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    gap: 0.375rem;
+    border-radius: 9999px;
+    border: 1px solid var(--aw-color-text-muted);
+    padding: 0 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .tool-btn-wide:hover {
+    border-color: var(--aw-color-primary);
+    color: var(--aw-color-primary);
+  }
+  .tool-btn-wide:focus-visible {
+    outline: 2px solid var(--aw-color-primary);
+    outline-offset: 2px;
+  }
+  .sheet-tab {
+    min-height: 44px;
+    padding: 0 1rem;
+    border-radius: 9999px;
+    border: 1px solid var(--aw-color-text-muted);
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  .sheet-tab-active {
+    background: var(--aw-color-primary);
+    border-color: var(--aw-color-primary);
+    color: #fff;
+  }
+  #cy {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.3 0 0 0 0 0.3 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+</style>
+
+<script>
+  // Cytoscape dimuat dinamis saat meja terlihat (hemat TBT awal + unused-JS).
+  import { SAMPLES, extractGraph, encodeGraph, decodeGraph, validateGraph, STORAGE_KEY } from '~/lib/graph';
+
+  const $ = (id) => document.getElementById(id);
+  const els = {
+    cy: $('cy'), cyEmpty: $('cyEmpty'), detail: $('detail'), detailEmpty: $('detailEmpty'),
+    detailContent: $('detailContent'), noteInput: $('noteInput'), buildBtn: $('buildBtn'),
+    clearBtn: $('clearBtn'), importBtn: $('importBtn'), importFile: $('importFile'),
+    charCount: $('charCount'), inputError: $('inputError'), statNodes: $('statNodes'),
+    statEdges: $('statEdges'), zoomIn: $('zoomIn'), zoomOut: $('zoomOut'), fitBtn: $('fitBtn'),
+    relayoutBtn: $('relayoutBtn'), searchInput: $('searchInput'), typeFilter: $('typeFilter'),
+    neighborToggle: $('neighborToggle'), exportJson: $('exportJson'), exportPng: $('exportPng'),
+    copyLink: $('copyLink'), tabNodes: $('tabNodes'), tabEdges: $('tabEdges'),
+    nodesTable: $('nodesTable'), edgesTable: $('edgesTable'), nodesBody: $('nodesBody'),
+    edgesBody: $('edgesBody'), tableEmpty: $('tableEmpty'), tableSearch: $('tableSearch'),
+    addNodeForm: $('addNodeForm'), newNodeLabel: $('newNodeLabel'), newNodeType: $('newNodeType'),
+    addEdgeForm: $('addEdgeForm'), edgeFrom: $('edgeFrom'), edgeLabel: $('edgeLabel'),
+    edgeTo: $('edgeTo'), edgeEvidence: $('edgeEvidence'), statusBar: $('statusBar'),
+    stampBtn: $('stampBtn'), eggNote: $('eggNote'), motionToggle: $('motionToggle'),
+  };
+
+  const TYPE_LABEL = { topik: 'Topik', nama: 'Nama', tahun: 'Tahun', langkah: 'Langkah' };
+  const TYPE_COLOR = { topik: '#7f041c', nama: '#005639', tahun: '#004c8f', langkah: '#b2363f' };
+  const MOTION_KEY = 'graphlihat:gerak';
+
+  let graph = { title: '', nodes: [], edges: [] };
+  let cy = null;
+  let cytoscapeLib = null;
+  let cyInitRequested = false;
+  let cyAllowed = false; // mesin graf baru boleh dimuat saat meja terlihat / ada aksi pengguna
+  let selected = null; // { kind: 'node'|'edge', id: string }
+  let stampClicks = 0;
+  let saveTimer = null;
+
+  function motionEnabled() {
+    try {
+      if (localStorage.getItem(MOTION_KEY) === 'mati') return false;
+    } catch { /* abaikan */ }
+    return !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  function syncMotionToggle() {
+    const on = motionEnabled();
+    els.motionToggle.textContent = on ? 'Gerak: nyala' : 'Gerak: mati';
+    els.motionToggle.setAttribute('aria-pressed', String(on));
+    document.documentElement.classList.toggle('gerak-mati', !on);
+  }
+
+
+  function withSlash(url) {
+    if (!url.pathname.endsWith('/')) url.pathname += '/';
+    return url;
+  }
+
+  function say(msg) { els.statusBar.textContent = msg; }
+  function showInputError(msg) {
+    if (!msg) { els.inputError.classList.add('hidden'); els.inputError.textContent = ''; return; }
+    els.inputError.textContent = msg;
+    els.inputError.classList.remove('hidden');
+  }
+
+  function esc(s) { return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+
+  function save() {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ graph, savedAt: Date.now() })); } catch { /* abaikan */ }
+    }, 400);
+  }
+
+  function loadStored() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      return validateGraph(parsed.graph) ? parsed.graph : null;
+    } catch { return null; }
+  }
+
+  // --- Cytoscape ------------------------------------------------------------
+  function cyElements() {
+    const nodes = graph.nodes.map((nd) => ({ data: { id: nd.id, label: nd.label, type: nd.type, weight: nd.weight } }));
+    const edges = graph.edges.map((ed) => ({ data: { id: ed.id, source: ed.source, target: ed.target, label: ed.label, weight: ed.weight } }));
+    return [...nodes, ...edges];
+  }
+
+  async function ensureCy() {
+    if (cy) return true;
+    if (cyInitRequested) return false;
+    cyInitRequested = true;
+    try {
+      cytoscapeLib = (await import('cytoscape')).default;
+    } catch (err) {
+      say('Mesin graf gagal dimuat di browser ini — coba muat ulang halaman.');
+      return false;
+    }
+    initCy();
+    return !!cy;
+  }
+
+  function initCy() {
+    try {
+      cy = cytoscapeLib({
+        container: els.cy,
+        elements: [],
+        style: [
+          {
+            selector: 'node',
+            style: {
+              'background-color': (ele) => TYPE_COLOR[ele.data('type')] || '#7f041c',
+              'border-width': 2,
+              'border-color': '#f1ceca',
+              label: 'data(label)',
+              color: '#1b0a0a',
+              'font-family': 'Heebo, sans-serif',
+              'font-size': 'mapData(weight, 1, 5, 11, 15)',
+              'font-weight': 600,
+              'text-valign': 'center',
+              'text-halign': 'center',
+              'text-wrap': 'wrap',
+              'text-max-width': '96px',
+              'text-background-color': '#f1ceca',
+              'text-background-opacity': 0.75,
+              'text-background-padding': '3px',
+              width: 'mapData(weight, 1, 5, 30, 64)',
+              height: 'mapData(weight, 1, 5, 30, 64)',
+            },
+          },
+          {
+            selector: 'edge',
+            style: {
+              width: 'mapData(weight, 1, 5, 1, 4)',
+              'line-color': '#513c3b',
+              'target-arrow-shape': 'triangle',
+              'target-arrow-color': '#513c3b',
+              'curve-style': 'bezier',
+              label: 'data(label)',
+              'font-size': 10,
+              color: '#513c3b',
+              'font-family': 'Heebo, sans-serif',
+              'text-background-color': '#f1ceca',
+              'text-background-opacity': 0.85,
+              'text-background-padding': '2px',
+              'text-rotation': 'autorotate',
+            },
+          },
+          { selector: 'node:selected', style: { 'border-width': 5, 'border-color': '#00c5d3' } },
+          { selector: 'edge:selected', style: { width: 4, 'line-color': '#00c5d3', 'target-arrow-color': '#00c5d3' } },
+          { selector: '.dim', style: { opacity: 0.12 } },
+          { selector: '.found', style: { 'border-width': 5, 'border-color': '#00c5d3' } },
+          { selector: '.hidden-type', style: { display: 'none' } },
+        ],
+        layout: { name: 'grid' },
+        minZoom: 0.3,
+        maxZoom: 3,
+      });
+      cy.on('tap', 'node', (evt) => selectNode(evt.target.id()));
+      cy.on('tap', 'edge', (evt) => selectEdge(evt.target.id()));
+      cy.on('tap', (evt) => { if (evt.target === cy) clearSelection(); });
+      cy.on('dbltap', 'node', (evt) => { cy.fit(evt.target, 120); });
+    } catch (err) {
+      els.cyEmpty.classList.remove('hidden');
+      els.cyEmpty.classList.add('flex');
+      els.cyEmpty.querySelector('p.font-heading').textContent = 'Graf tidak bisa dimuat di browser ini.';
+      say('Graf gagal dimuat: ' + (err && err.message ? err.message : 'galat tidak dikenal'));
+    }
+  }
+
+  function runLayout(animate) {
+    if (!cy) return;
+    const layout = cy.layout({
+      name: 'cose',
+      animate: animate && motionEnabled(),
+      animationDuration: 600,
+      randomize: false,
+      fit: true,
+      padding: 30,
+      idealEdgeLength: 110,
+      nodeRepulsion: 4200,
+      gravity: 0.25,
+      numIter: 600,
+    });
+    layout.run();
+  }
+
+  async function renderGraph(animate = true) {
+    renderTables();
+    renderStats();
+    clearSelection();
+    if (graph.nodes.length === 0) {
+      if (cy) cy.elements().remove();
+      els.cyEmpty.classList.remove('hidden');
+      els.cyEmpty.classList.add('flex');
+      return;
+    }
+    els.cyEmpty.classList.add('hidden');
+    els.cyEmpty.classList.remove('flex');
+    if (!cy && !cyAllowed) return; // tunda muat mesin sampai meja terlihat
+    const ok = await ensureCy();
+    if (!ok || !cy) return;
+    cy.elements().remove();
+    cy.add(cyElements());
+    applyTypeFilter();
+    runLayout(animate);
+  }
+
+  function renderStats() {
+    els.statNodes.textContent = String(graph.nodes.length);
+    els.statEdges.textContent = String(graph.edges.length);
+  }
+
+  // --- Panel bukti ----------------------------------------------------------
+  function el(tag, cls, text) {
+    const d = document.createElement(tag);
+    if (cls) d.className = cls;
+    if (text !== undefined) d.textContent = text;
+    return d;
+  }
+
+  function neighborIds(nodeId) {
+    const set = new Set([nodeId]);
+    graph.edges.forEach((ed) => {
+      if (ed.source === nodeId) set.add(ed.target);
+      if (ed.target === nodeId) set.add(ed.source);
+    });
+    return set;
+  }
+
+  function applyDim() {
+    if (!cy) return;
+    cy.elements().removeClass('dim');
+    if (selected && selected.kind === 'node' && els.neighborToggle.getAttribute('aria-checked') === 'true') {
+      const keep = neighborIds(selected.id);
+      const keepEdges = new Set(graph.edges.filter((ed) => keep.has(ed.source) && keep.has(ed.target)).map((ed) => ed.id));
+      cy.elements().forEach((ele) => {
+        const id = ele.id();
+        const isNode = ele.isNode();
+        if (isNode ? !keep.has(id) : !keepEdges.has(id)) ele.addClass('dim');
+      });
+    }
+  }
+
+  function selectNode(id) {
+    const nd = graph.nodes.find((x) => x.id === id);
+    if (!nd) return;
+    selected = { kind: 'node', id };
+    if (cy) { cy.elements().removeClass('found'); cy.getElementById(id).addClass('found'); }
+    applyDim();
+    const box = els.detailContent;
+    box.innerHTML = '';
+    box.appendChild(el('p', 'text-xs font-bold tracking-widest text-primary', 'SIMPUL · ' + (TYPE_LABEL[nd.type] || nd.type).toUpperCase()));
+    box.appendChild(el('h3', 'mt-1 font-heading text-3xl text-heading', nd.label));
+    box.appendChild(el('p', 'mt-1 text-sm text-muted', 'Muncul ' + nd.weight + ' kali · terhubung ke ' + (neighborIds(id).size - 1) + ' simpul lain.'));
+    const h = el('h4', 'mt-4 text-sm font-bold', 'Kalimat bukti');
+    box.appendChild(h);
+    const ol = el('ol', 'mt-1 list-decimal space-y-2 pl-5 text-sm leading-relaxed');
+    (nd.evidence.length ? nd.evidence : ['Belum ada kalimat bukti untuk simpul ini — tambahkan lewat relasi, ya.']).forEach((s) => {
+      ol.appendChild(el('li', '', s));
+    });
+    box.appendChild(ol);
+    const h2 = el('h4', 'mt-4 text-sm font-bold', 'Tetangga');
+    box.appendChild(h2);
+    const wrap = el('div', 'mt-2 flex flex-wrap gap-2');
+    [...neighborIds(id)].filter((x) => x !== id).forEach((nid) => {
+      const nb = graph.nodes.find((x) => x.id === nid);
+      if (!nb) return;
+      const b = el('button', 'rounded-full border border-muted px-3 py-1.5 text-sm transition hover:border-primary hover:text-primary focus-visible:outline-2 focus-visible:outline-primary', nb.label);
+      b.type = 'button';
+      b.addEventListener('click', () => selectNode(nid));
+      wrap.appendChild(b);
+    });
+    if (!wrap.children.length) wrap.appendChild(el('p', 'text-sm text-muted', 'Simpul ini belum punya tetangga.'));
+    box.appendChild(wrap);
+    els.detailEmpty.classList.add('hidden');
+    box.classList.remove('hidden');
+  }
+
+  function selectEdge(id) {
+    const ed = graph.edges.find((x) => x.id === id);
+    if (!ed) return;
+    selected = { kind: 'edge', id };
+    applyDim();
+    const from = graph.nodes.find((x) => x.id === ed.source);
+    const to = graph.nodes.find((x) => x.id === ed.target);
+    const box = els.detailContent;
+    box.innerHTML = '';
+    box.appendChild(el('p', 'text-xs font-bold tracking-widest text-primary', 'RELASI'));
+    box.appendChild(el('h3', 'mt-1 font-heading text-2xl leading-snug text-heading', (from ? from.label : ed.source) + ' — ' + ed.label + ' — ' + (to ? to.label : ed.target)));
+    box.appendChild(el('p', 'mt-1 text-sm text-muted', 'Muncul bersama ' + ed.weight + ' kali di catatan.'));
+    box.appendChild(el('h4', 'mt-4 text-sm font-bold', 'Kalimat bukti'));
+    box.appendChild(el('p', 'mt-1 rounded-lg border border-dashed border-muted p-3 text-sm leading-relaxed', ed.evidence || 'Belum ada kalimat bukti.'));
+    const row = el('div', 'mt-3 flex flex-wrap gap-2');
+    [from, to].forEach((nd) => {
+      if (!nd) return;
+      const b = el('button', 'rounded-full border border-muted px-3 py-1.5 text-sm transition hover:border-primary hover:text-primary focus-visible:outline-2 focus-visible:outline-primary', 'Lihat simpul: ' + nd.label);
+      b.type = 'button';
+      b.addEventListener('click', () => selectNode(nd.id));
+      row.appendChild(b);
+    });
+    box.appendChild(row);
+    els.detailEmpty.classList.add('hidden');
+    box.classList.remove('hidden');
+  }
+
+  function clearSelection() {
+    selected = null;
+    if (cy) cy.elements().removeClass('dim found');
+    els.detailContent.classList.add('hidden');
+    els.detailContent.innerHTML = '';
+    els.detailEmpty.classList.remove('hidden');
+  }
+
+  // --- Tabel spreadsheet ----------------------------------------------------
+  function edgeCount(nodeId) {
+    return graph.edges.filter((ed) => ed.source === nodeId || ed.target === nodeId).length;
+  }
+
+  function renderTables() {
+    const q = (els.tableSearch.value || '').trim().toLowerCase();
+    const byId = new Map(graph.nodes.map((nd) => [nd.id, nd]));
+    // isi dropdown tambah relasi
+    for (const sel of [els.edgeFrom, els.edgeTo]) {
+      const cur = sel.value;
+      sel.innerHTML = '';
+      graph.nodes.forEach((nd) => {
+        const o = document.createElement('option');
+        o.value = nd.id;
+        o.textContent = nd.label;
+        sel.appendChild(o);
+      });
+      if ([...sel.options].some((o) => o.value === cur)) sel.value = cur;
+    }
+    // tabel simpul
+    els.nodesBody.innerHTML = '';
+    const nodes = graph.nodes.filter((nd) => !q || nd.label.toLowerCase().includes(q));
+    nodes.forEach((nd, i) => {
+      const tr = document.createElement('tr');
+      tr.className = 'border-b border-default/60 hover:bg-white/50';
+      const cells = [String(i + 1), nd.label, TYPE_LABEL[nd.type] || nd.type, String(edgeCount(nd.id)), String(nd.weight)];
+      cells.forEach((c, ci) => {
+        const td = document.createElement(ci === 1 ? 'th' : 'td');
+        if (ci === 1) td.scope = 'row';
+        td.className = 'px-4 py-2.5' + (ci === 1 ? ' font-semibold' : '');
+        td.textContent = c;
+        tr.appendChild(td);
+      });
+      const tdAct = document.createElement('td');
+      tdAct.className = 'px-4 py-2.5 text-right';
+      const view = document.createElement('button');
+      view.type = 'button';
+      view.className = 'mr-2 inline-flex min-h-[44px] items-center rounded-full border border-muted px-3 py-1 text-xs font-medium hover:border-primary hover:text-primary focus-visible:outline-2 focus-visible:outline-primary';
+      view.textContent = 'Lihat';
+      view.addEventListener('click', () => selectNode(nd.id));
+      const del = document.createElement('button');
+      del.type = 'button';
+      del.className = 'inline-flex min-h-[44px] items-center rounded-full border border-muted px-3 py-1 text-xs font-medium text-primary hover:border-primary focus-visible:outline-2 focus-visible:outline-primary';
+      del.textContent = 'Hapus';
+      del.setAttribute('aria-label', 'Hapus simpul ' + nd.label);
+      del.addEventListener('click', () => deleteNode(nd.id));
+      tdAct.append(view, del);
+      tr.appendChild(tdAct);
+      els.nodesBody.appendChild(tr);
+    });
+    // tabel relasi
+    els.edgesBody.innerHTML = '';
+    const edges = graph.edges.filter((ed) => {
+      if (!q) return true;
+      const a = byId.get(ed.source)?.label || '';
+      const b = byId.get(ed.target)?.label || '';
+      return (a + ' ' + ed.label + ' ' + b + ' ' + ed.evidence).toLowerCase().includes(q);
+    });
+    edges.forEach((ed) => {
+      const tr = document.createElement('tr');
+      tr.className = 'border-b border-default/60 hover:bg-white/50';
+      const from = byId.get(ed.source)?.label || ed.source;
+      const to = byId.get(ed.target)?.label || ed.target;
+      [from, ed.label, to, ed.evidence].forEach((c, ci) => {
+        const td = document.createElement('td');
+        td.className = 'px-4 py-2.5' + (ci === 3 ? ' max-w-[280px] truncate' : '');
+        if (ci === 3) td.title = ed.evidence;
+        td.textContent = c;
+        tr.appendChild(td);
+      });
+      const tdAct = document.createElement('td');
+      tdAct.className = 'px-4 py-2.5 text-right';
+      const view = document.createElement('button');
+      view.type = 'button';
+      view.className = 'mr-2 inline-flex min-h-[44px] items-center rounded-full border border-muted px-3 py-1 text-xs font-medium hover:border-primary hover:text-primary focus-visible:outline-2 focus-visible:outline-primary';
+      view.textContent = 'Lihat';
+      view.addEventListener('click', () => selectEdge(ed.id));
+      const del = document.createElement('button');
+      del.type = 'button';
+      del.className = 'inline-flex min-h-[44px] items-center rounded-full border border-muted px-3 py-1 text-xs font-medium text-primary hover:border-primary focus-visible:outline-2 focus-visible:outline-primary';
+      del.textContent = 'Hapus';
+      del.setAttribute('aria-label', 'Hapus relasi ' + from + ' ' + ed.label + ' ' + to);
+      del.addEventListener('click', () => deleteEdge(ed.id));
+      tdAct.append(view, del);
+      tr.appendChild(tdAct);
+      els.edgesBody.appendChild(tr);
+    });
+    const empty = (els.nodesTable.classList.contains('hidden') ? edges.length : nodes.length) === 0;
+    els.tableEmpty.classList.toggle('hidden', !empty);
+  }
+
+  function deleteNode(id) {
+    const nd = graph.nodes.find((x) => x.id === id);
+    graph.edges = graph.edges.filter((ed) => ed.source !== id && ed.target !== id);
+    graph.nodes = graph.nodes.filter((x) => x.id !== id);
+    renderGraph(false);
+    save();
+    say('Simpul ' + (nd ? nd.label : '') + ' dihapus. Muat ulang contoh untuk mengembalikannya.');
+  }
+
+  function deleteEdge(id) {
+    graph.edges = graph.edges.filter((ed) => ed.id !== id);
+    renderGraph(false);
+    save();
+    say('Relasi dihapus.');
+  }
+
+  // --- Muat / bangun graf ---------------------------------------------------
+  function loadGraph(g, announce) {
+    graph = JSON.parse(JSON.stringify(g));
+    renderGraph(true);
+    save();
+    if (announce) say('Graf "' + graph.title + '" terbuka: ' + graph.nodes.length + ' simpul, ' + graph.edges.length + ' relasi.');
+  }
+
+  function loadSample(id) {
+    const s = SAMPLES.find((x) => x.id === id);
+    if (!s) return;
+    cyAllowed = true;
+    loadGraph(s.graph, true);
+    try {
+      const url = withSlash(new URL(window.location.href));
+      url.searchParams.delete('g');
+      url.searchParams.set('contoh', id);
+      history.replaceState(null, '', url.toString());
+    } catch { /* abaikan */ }
+    document.querySelectorAll('.sample-btn').forEach((b) => {
+      const active = b.getAttribute('data-sample') === id;
+      b.classList.toggle('border-primary', active);
+      b.classList.toggle('shadow-lg', active);
+    });
+  }
+
+  function buildFromText() {
+    const text = els.noteInput.value.trim();
+    showInputError('');
+    if (text.length < 100) {
+      showInputError('Teksnya masih terlalu pendek — Mbak butuh minimal 3 kalimat (sekitar 100 karakter) biar simpulnya ketemu.');
+      return;
+    }
+    const sentences = text.split(/(?<=[.!?])\s+|\n+/).filter((s) => s.trim().length > 8);
+    if (sentences.length < 3) {
+      showInputError('Mbak hitung kalimatnya kurang dari 3. Tambah dua kalimat lagi, ya — satu kalimat satu ide.');
+      return;
+    }
+    cyAllowed = true;
+    const g = extractGraph(text, 'Catatanku');
+    if (g.nodes.length === 0) {
+      showInputError('Mbak belum nemu kata yang berulang di teks ini. Coba teks yang menyebut nama atau topik yang sama beberapa kali.');
+      return;
+    }
+    loadGraph(g, true);
+    try {
+      const url = withSlash(new URL(window.location.href));
+      url.searchParams.delete('contoh');
+      url.searchParams.set('g', encodeGraph(g));
+      history.replaceState(null, '', url.toString());
+    } catch { /* abaikan */ }
+    say('Graf dari catatanmu jadi: ' + g.nodes.length + ' simpul, ' + g.edges.length + ' relasi. Semua bukti kalimat tersimpan di panel.');
+  }
+
+  function download(filename, content, type) {
+    const blob = content instanceof Blob ? content : new Blob([content], { type });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  }
+
+  function applyTypeFilter() {
+    if (!cy) return;
+    const f = els.typeFilter.value;
+    cy.nodes().forEach((ele) => {
+      ele.toggleClass('hidden-type', !!f && ele.data('type') !== f);
+    });
+    cy.edges().forEach((ele) => {
+      const a = cy.getElementById(ele.data('source'));
+      const b = cy.getElementById(ele.data('target'));
+      ele.toggleClass('hidden-type', a.hasClass('hidden-type') || b.hasClass('hidden-type'));
+    });
+  }
+
+  // --- Wiring ---------------------------------------------------------------
+  document.querySelectorAll('.sample-btn').forEach((b) => {
+    b.addEventListener('click', () => loadSample(b.getAttribute('data-sample')));
+  });
+  els.buildBtn.addEventListener('click', buildFromText);
+  els.clearBtn.addEventListener('click', () => {
+    els.noteInput.value = '';
+    els.charCount.textContent = '0 / 20.000 karakter';
+    loadGraph({ title: 'Kosong', nodes: [], edges: [] }, false);
+    showInputError('');
+    say('Meja dibersihkan. Tempel catatan baru atau buka contoh.');
+  });
+  els.noteInput.addEventListener('input', () => {
+    const len = els.noteInput.value.length;
+    els.charCount.textContent = len.toLocaleString('id-ID') + ' / 20.000 karakter';
+    if (len > 0) showInputError('');
+  });
+  els.importBtn.addEventListener('click', () => els.importFile.click());
+  els.importFile.addEventListener('change', () => {
+    const f = els.importFile.files && els.importFile.files[0];
+    if (!f) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const parsed = JSON.parse(String(reader.result));
+        if (!validateGraph(parsed)) throw new Error('format tidak dikenal');
+        loadGraph(parsed, true);
+        say('Berkas JSON dimuat: ' + parsed.nodes.length + ' simpul.');
+      } catch {
+        showInputError('Berkas ini bukan graf GraphLihat yang sah — Mbak tidak bisa membacanya. Coba ekspor dari GraphLihat dulu.');
+      }
+      els.importFile.value = '';
+    };
+    reader.readAsText(f);
+  });
+
+  els.zoomIn.addEventListener('click', () => cy && cy.zoom(cy.zoom() * 1.25));
+  els.zoomOut.addEventListener('click', () => cy && cy.zoom(cy.zoom() / 1.25));
+  els.fitBtn.addEventListener('click', () => cy && cy.fit(undefined, 40));
+  els.relayoutBtn.addEventListener('click', () => runLayout(true));
+  els.searchInput.addEventListener('input', () => {
+    if (!cy) return;
+    const q = els.searchInput.value.trim().toLowerCase();
+    cy.nodes().removeClass('found');
+    if (!q) return;
+    const hit = graph.nodes.find((nd) => nd.label.toLowerCase().includes(q));
+    if (hit) {
+      cy.getElementById(hit.id).addClass('found');
+      cy.fit(cy.getElementById(hit.id), 120);
+    }
+  });
+  els.typeFilter.addEventListener('change', applyTypeFilter);
+  els.neighborToggle.addEventListener('click', () => {
+    const on = els.neighborToggle.getAttribute('aria-checked') !== 'true';
+    els.neighborToggle.setAttribute('aria-checked', String(on));
+    const dot = document.getElementById('neighborDot');
+    if (dot) {
+      dot.classList.toggle('bg-primary', on);
+      dot.classList.toggle('border-primary', on);
+    }
+    applyDim();
+  });
+  els.exportJson.addEventListener('click', () => {
+    download('graphlihat-' + (graph.title || 'graf').toLowerCase().replace(/[^a-z0-9]+/g, '-') + '.json', JSON.stringify(graph, null, 2), 'application/json');
+    say('Graf diekspor sebagai JSON.');
+  });
+  els.exportPng.addEventListener('click', () => {
+    if (!cy) return;
+    try {
+      const blob = cy.png({ output: 'blob', bg: '#fce5e3', scale: 2 });
+      download('graphlihat-' + (graph.title || 'graf').toLowerCase().replace(/[^a-z0-9]+/g, '-') + '.png', blob, 'image/png');
+      say('Graf diekspor sebagai PNG.');
+    } catch {
+      say('PNG gagal diekspor di browser ini — coba ekspor JSON.');
+    }
+  });
+  els.copyLink.addEventListener('click', async () => {
+    const url = withSlash(new URL(window.location.href));
+    url.searchParams.delete('contoh');
+    url.searchParams.set('g', encodeGraph(graph));
+    const link = url.toString();
+    try {
+      await navigator.clipboard.writeText(link);
+      say('Tautan graf disalin — siapa pun yang membukanya melihat graf yang sama.');
+    } catch {
+      history.replaceState(null, '', link);
+      say('Izin clipboard ditolak — tautan sudah dipasang di address bar, salin dari sana.');
+    }
+  });
+
+  els.tabNodes.addEventListener('click', () => {
+    els.nodesTable.classList.remove('hidden');
+    els.edgesTable.classList.add('hidden');
+    els.tabNodes.classList.add('sheet-tab-active');
+    els.tabEdges.classList.remove('sheet-tab-active');
+    els.tabNodes.setAttribute('aria-selected', 'true');
+    els.tabEdges.setAttribute('aria-selected', 'false');
+    renderTables();
+  });
+  els.tabEdges.addEventListener('click', () => {
+    els.edgesTable.classList.remove('hidden');
+    els.nodesTable.classList.add('hidden');
+    els.tabEdges.classList.add('sheet-tab-active');
+    els.tabNodes.classList.remove('sheet-tab-active');
+    els.tabEdges.setAttribute('aria-selected', 'true');
+    els.tabNodes.setAttribute('aria-selected', 'false');
+    renderTables();
+  });
+  els.tableSearch.addEventListener('input', renderTables);
+
+  els.addNodeForm.addEventListener('submit', (ev) => {
+    ev.preventDefault();
+    const label = els.newNodeLabel.value.trim();
+    if (!label) { showInputError('Nama simpulnya jangan kosong, ya.'); return; }
+    if (graph.nodes.some((nd) => nd.label.toLowerCase() === label.toLowerCase())) {
+      showInputError('Simpul "' + label + '" sudah ada di meja — pilih nama lain.');
+      return;
+    }
+    const id = label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') + '-' + String(Date.now()).slice(-5);
+    graph.nodes.push({ id, label, type: els.newNodeType.value, evidence: [], weight: 2 });
+    els.newNodeLabel.value = '';
+    showInputError('');
+    renderGraph(false);
+    save();
+    say('Simpul "' + label + '" ditambahkan.');
+  });
+
+  els.addEdgeForm.addEventListener('submit', (ev) => {
+    ev.preventDefault();
+    const from = els.edgeFrom.value;
+    const to = els.edgeTo.value;
+    const label = els.edgeLabel.value.trim();
+    const evidence = els.edgeEvidence.value.trim();
+    if (!from || !to) { showInputError('Pilih dulu simpul asal dan tujuannya.'); return; }
+    if (from === to) { showInputError('Relasi butuh dua simpul yang berbeda — asal dan tujuan tidak boleh sama.'); return; }
+    if (!label) { showInputError('Label relasinya jangan kosong — mis. "dibuat dari".'); return; }
+    if (!evidence) { showInputError('Kalimat buktinya wajib diisi — tiap relasi harus bisa dibuktikan satu kalimat.'); return; }
+    if (graph.edges.some((ed) => (ed.source === from && ed.target === to) || (ed.source === to && ed.target === from))) {
+      showInputError('Relasi antara dua simpul ini sudah ada — ubah labelnya atau hapus dulu yang lama.');
+      return;
+    }
+    graph.edges.push({ id: from + '__' + to + '-' + String(Date.now()).slice(-5), source: from, target: to, label, evidence, weight: 1 });
+    els.edgeLabel.value = '';
+    els.edgeEvidence.value = '';
+    showInputError('');
+    renderGraph(false);
+    save();
+    say('Relasi baru ditambahkan.');
+  });
+
+  els.stampBtn.addEventListener('click', () => {
+    stampClicks += 1;
+    if (stampClicks < 5) {
+      say('Stempel diketuk ' + stampClicks + ' kali…');
+      return;
+    }
+    stampClicks = 0;
+    els.eggNote.textContent = '“Kamu teliti juga, ya. Simpul rahasia: Nenek terhubung ke semua resep.” — Mbak Arsip';
+    els.eggNote.classList.remove('hidden');
+    if (graph.nodes.some((nd) => nd.id === 'rendang') && !graph.nodes.some((nd) => nd.id === 'nenek')) {
+      graph.nodes.push({ id: 'nenek', label: 'Nenek', type: 'nama', evidence: ['Nenek yang menjaga resep ini turun-temurun.'], weight: 4 });
+      ['rendang', 'daging-sapi', 'santan'].forEach((t) => {
+        graph.edges.push({ id: 'nenek__' + t, source: 'nenek', target: t, label: 'menjaga resep', evidence: 'Nenek yang menjaga resep ini turun-temurun.', weight: 2 });
+      });
+      renderGraph(true);
+      save();
+      say('Simpul rahasia "Nenek" muncul di graf!');
+    }
+  });
+
+  els.motionToggle.addEventListener('click', () => {
+    const next = motionEnabled() ? 'mati' : 'nyala';
+    try { localStorage.setItem(MOTION_KEY, next); } catch { /* abaikan */ }
+    syncMotionToggle();
+    say(next === 'nyala' ? 'Gerak dinyalakan.' : 'Gerak dimatikan — graf tetap bisa dipakai seperti biasa.');
+  });
+
+  els.cy.addEventListener('keydown', (ev) => {
+    if (!cy) return;
+    const step = 60;
+    if (ev.key === 'ArrowLeft') { cy.panBy({ x: step, y: 0 }); ev.preventDefault(); }
+    else if (ev.key === 'ArrowRight') { cy.panBy({ x: -step, y: 0 }); ev.preventDefault(); }
+    else if (ev.key === 'ArrowUp') { cy.panBy({ x: 0, y: step }); ev.preventDefault(); }
+    else if (ev.key === 'ArrowDown') { cy.panBy({ x: 0, y: -step }); ev.preventDefault(); }
+    else if (ev.key === '+' || ev.key === '=') { cy.zoom(cy.zoom() * 1.2); ev.preventDefault(); }
+    else if (ev.key === '-') { cy.zoom(cy.zoom() / 1.2); ev.preventDefault(); }
+    else if (ev.key.toLowerCase() === 'f') { cy.fit(undefined, 40); ev.preventDefault(); }
+    else if (ev.key === 'Escape') { clearSelection(); }
+  });
+
+  // --- Start ----------------------------------------------------------------
+  syncMotionToggle();
+  // Muat mesin graf saat meja mendekati viewport (hemat TBT awal).
+  if ('IntersectionObserver' in window) {
+    const cyObserver = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((en) => en.isIntersecting)) {
+          cyObserver.disconnect();
+          cyAllowed = true;
+          renderGraph(true);
+        }
+      },
+      { rootMargin: '600px' }
+    );
+    cyObserver.observe(els.cy);
+  } else {
+    renderGraph(true);
+  }
+  // Klik di kanvas sebelum mesin siap ikut memicu muat.
+  els.cy.addEventListener('pointerdown', () => { cyAllowed = true; if (!cy) renderGraph(true); });
+  (() => {
+    try {
+      const u = new URL(window.location.href);
+      if ((u.searchParams.has('g') || u.searchParams.has('contoh')) && !u.pathname.endsWith('/')) {
+        u.pathname += '/';
+        history.replaceState(null, '', u.toString());
+      }
+    } catch { /* abaikan */ }
+    let initial = null;
+    let fromUrl = false;
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const g = params.get('g');
+      const contoh = params.get('contoh');
+      if (g) {
+        const decoded = decodeGraph(g);
+        if (decoded) { initial = decoded; fromUrl = true; }
+      } else if (contoh) {
+        const s = SAMPLES.find((x) => x.id === contoh);
+        if (s) initial = s.graph;
+      }
+    } catch { /* abaikan */ }
+    if (!initial) initial = loadStored();
+    if (!initial) initial = SAMPLES[0].graph;
+    loadGraph(initial, false);
+    if (fromUrl) say('Graf dari tautan dibuka: ' + graph.nodes.length + ' simpul, ' + graph.edges.length + ' relasi.');
+    else say('Meja dibuka dengan contoh "Rendang Nenek". Ganti contoh atau tempel catatanmu sendiri.');
+  })();
+</script>

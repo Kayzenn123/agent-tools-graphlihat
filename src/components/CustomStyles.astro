@@ -1,0 +1,51 @@
+---
+// Font family is provided by Astro's native Fonts API (see `fonts` in
+// astro.config.ts and <Font /> in Layout.astro):
+// Blaka = display (judul raksasa), Heebo variable = body, Bilbo = aksen tulisan tangan.
+// Palet GraphLihat (BRIEF.md): kertas koran kuning + tinta terakota + teal/biru jalur bukti.
+// Semua pasangan teks/latar lolos WCAG AA (dihitung dari oklch, lihat BRIEF.md).
+---
+
+<style is:inline>
+  :root {
+    --aw-font-sans: var(--font-heebo);
+    --aw-font-serif: var(--font-bilbo);
+    --aw-font-heading: var(--font-blaka);
+
+    --aw-color-primary: rgb(127 4 28);
+    --aw-color-secondary: rgb(0 86 57);
+    --aw-color-accent: rgb(0 76 143);
+
+    --aw-color-text-heading: rgb(27 10 10);
+    --aw-color-text-default: rgb(27 10 10);
+    --aw-color-text-muted: rgb(81 60 59);
+    --aw-color-bg-page: rgb(241 206 202);
+
+    --aw-color-bg-page-dark: rgb(27 10 10);
+
+    ::selection {
+      background-color: rgb(0 197 211);
+      color: rgb(27 10 10);
+    }
+  }
+
+  .dark {
+    --aw-font-sans: var(--font-heebo);
+    --aw-font-serif: var(--font-bilbo);
+    --aw-font-heading: var(--font-blaka);
+
+    --aw-color-primary: rgb(224 120 127);
+    --aw-color-secondary: rgb(79 216 168);
+    --aw-color-accent: rgb(127 184 232);
+
+    --aw-color-text-heading: rgb(241 206 202);
+    --aw-color-text-default: rgb(241 206 202);
+    --aw-color-text-muted: rgb(216 184 176);
+    --aw-color-bg-page: rgb(27 10 10);
+
+    ::selection {
+      background-color: rgb(0 197 211);
+      color: rgb(27 10 10);
+    }
+  }
+</style>
